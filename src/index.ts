@@ -6,35 +6,39 @@ let certsFetching = 0;
 let certsFetched = 0;
 
 const client = new CertStreamClient(async (meta) => {
-  certsSeen++;
+  try {
+    certsSeen++;
 
-  // Get the domain from the cert
-  const domain = meta.data.leaf_cert.all_domains?.[0]?.replace('*.', '');
-  if (domain === undefined) return;
+    // Get the domain from the cert
+    const domain = meta.data.leaf_cert.all_domains?.[0]?.replace('*.', '');
+    if (domain === undefined) return;
 
-  // Log every 100th cert
-  if (certsSeen % 100 === 0) {
-    console.info(`> [client] ${certsSeen} certs seen, ${certsFetched}/${certsFetching} fetched`);
+    // Log every 100th cert
+    if (certsSeen % 100 === 0) {
+      console.info(`> [client] ${certsSeen} certs seen, ${certsFetched}/${certsFetching} fetched`);
+    }
+
+    // Fetch the main page of the site
+    certsFetching++;
+    const response = await fetch(`http://${domain}`, {
+      timeout: true,
+    }).catch(() => undefined);
+    certsFetched++;
+    if (!response) return;
+
+    // Get the request body
+    const text = await response.text();
+
+    // Check for MEV scam
+    if (text.includes('MEV')) console.info(`> [client] ${domain} Found possible MEV scam`);
+
+    // Check for crypto
+    if (text.includes('crypto')) console.info(`> [client] ${domain} Found crypto site`);
+
+    console.info(`> [client] ${domain} ${response.status}`);
+  } catch (error) {
+    console.error(`> [client] ${error}`);
   }
-
-  // Fetch the main page of the site
-  certsFetching++;
-  const response = await fetch(`http://${domain}`, {
-    timeout: true,
-  }).catch(() => undefined);
-  certsFetched++;
-  if (!response) return;
-
-  // Get the request body
-  const text = await response.text();
-
-  // Check for MEV scam
-  if (text.includes('MEV')) console.info(`> [client] ${domain} Found possible MEV scam`);
-
-  // Check for crypto
-  if (text.includes('crypto')) console.info(`> [client] ${domain} Found crypto site`);
-
-  console.info(`> [client] ${domain} ${response.status}`);
 });
 
 console.info('> [client] started');
