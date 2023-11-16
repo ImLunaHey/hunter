@@ -1,8 +1,7 @@
 {
   "name": "hunter",
   "scripts": {
-    "build": "npx tsup ./src/index.ts --format=esm",
-    "start": "node ./dist/index.mjs"
+    "start": "bun run ./src/index.ts"
   },
   "dependencies": {
     "@axiomhq/axiom-node": "^0.12.0",
