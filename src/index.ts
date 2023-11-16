@@ -18,24 +18,24 @@ const client = new CertStreamClient(async (meta) => {
       console.info(`> [client] ${certsSeen} certs seen, ${certsFetched}/${certsFetching} fetched`);
     }
 
-    // Fetch the main page of the site
-    certsFetching++;
-    const response = await fetch(`http://${domain}`, {
-      timeout: true,
-    }).catch(() => undefined);
-    certsFetched++;
-    if (!response) return;
+    // // Fetch the main page of the site
+    // certsFetching++;
+    // const response = await fetch(`http://${domain}`, {
+    //   timeout: true,
+    // }).catch(() => undefined);
+    // certsFetched++;
+    // if (!response) return;
 
-    // Get the request body
-    const text = await response.text();
+    // // Get the request body
+    // const text = await response.text();
 
-    // Check for MEV scam
-    if (text.includes('MEV')) console.info(`> [client] ${domain} Found possible MEV scam`);
+    // // Check for MEV scam
+    // if (text.includes('MEV')) console.info(`> [client] ${domain} Found possible MEV scam`);
 
-    // Check for crypto
-    if (text.includes('crypto')) console.info(`> [client] ${domain} Found crypto site`);
+    // // Check for crypto
+    // if (text.includes('crypto')) console.info(`> [client] ${domain} Found crypto site`);
 
-    console.info(`> [client] ${domain} ${response.status}`);
+    // console.info(`> [client] ${domain} ${response.status}`);
   } catch (error) {
     console.error(`> [client] ${error}`);
   }
