@@ -41,25 +41,29 @@ const client = new CertStreamClient(async (meta) => {
   }
 });
 
-console.info('> [client] started');
+try {
+  console.info('> [client] started');
 
-// Connect to the websocket server
-await client.connect();
-console.info('> [client] connected to stream');
+  // Connect to the websocket server
+  await client.connect();
+  console.info('> [client] connected to stream');
 
-// Failed to connect
-if (!client.ws) process.exit(0);
+  // Failed to connect
+  if (!client.ws) process.exit(0);
 
-const originalOnOpen = client.ws.onopen;
-client.ws.onopen = (event) => {
-  console.info('> [client] opened');
-  originalOnOpen?.(event);
-};
+  const originalOnOpen = client.ws.onopen;
+  client.ws.onopen = (event) => {
+    console.info('> [client] opened');
+    originalOnOpen?.(event);
+  };
 
-client.ws.onclose = (event) => {
-  console.info(`> [client] closed: ${event.code} ${event.reason}`);
-};
+  client.ws.onclose = (event) => {
+    console.info(`> [client] closed: ${event.code} ${event.reason}`);
+  };
 
-client.ws.onerror = (event) => {
-  console.info(`> [client] error: ${event}`);
-};
+  client.ws.onerror = (event) => {
+    console.info(`> [client] error: ${event}`);
+  };
+} catch (error) {
+  console.error(`> [client] ${error}`);
+}
