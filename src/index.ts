@@ -16,6 +16,8 @@ const client = new CertStreamClient(async (meta) => {
     // Log the domain
     console.log(
       JSON.stringify({
+        message: 'new-cert',
+        level: 'debug',
         domain,
         _time: Date.now(),
       }),
