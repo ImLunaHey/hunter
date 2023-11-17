@@ -14,7 +14,12 @@ const client = new CertStreamClient(async (meta) => {
     if (domain === undefined) return;
 
     // Log the domain
-    console.log(domain);
+    console.log(
+      JSON.stringify({
+        domain,
+        _time: Date.now(),
+      }),
+    );
 
     // // Log every 100th cert
     // if (certsSeen % 100 === 0) {
