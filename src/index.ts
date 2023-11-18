@@ -4,6 +4,7 @@ import { CertStreamClient } from './cert-stream';
 let certsSeen = 0;
 let certsFetching = 0;
 let certsFetched = 0;
+let workersRunning = 0;
 
 const client = new CertStreamClient(async (meta) => {
   try {
@@ -34,6 +35,7 @@ const client = new CertStreamClient(async (meta) => {
         certsSeen,
         certsFetching,
         certsFetched,
+        workersRunning,
         _time: Date.now(),
       }),
     );
@@ -43,8 +45,10 @@ const client = new CertStreamClient(async (meta) => {
     const worker = new Worker(workerURL, {
       smol: true,
     });
+    workersRunning++;
     worker.postMessage(domain);
     worker.onmessage = (event) => {
+      workersRunning--;
       certsFetched++;
       switch (event.data) {
         case 'mev':
