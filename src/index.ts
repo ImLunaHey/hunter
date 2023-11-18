@@ -40,7 +40,9 @@ const client = new CertStreamClient(async (meta) => {
 
     certsFetching++;
     const workerURL = new URL('workers/scams/mev.ts', import.meta.url).href;
-    const worker = new Worker(workerURL);
+    const worker = new Worker(workerURL, {
+      smol: true,
+    });
     worker.postMessage(domain);
     worker.onmessage = (event) => {
       certsFetched++;
