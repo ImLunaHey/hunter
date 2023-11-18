@@ -23,6 +23,18 @@ const client = new CertStreamClient(async (meta) => {
       }),
     );
 
+    // Log the stats
+    console.info(
+      JSON.stringify({
+        message: 'stats',
+        level: 'debug',
+        certsSeen,
+        certsFetching,
+        certsFetched,
+        _time: Date.now(),
+      }),
+    );
+
     // Only check 1/100 certs
     if (certsSeen % 100 !== 0) return;
 
