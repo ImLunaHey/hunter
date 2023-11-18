@@ -23,38 +23,38 @@ const client = new CertStreamClient(async (meta) => {
       }),
     );
 
-    certsFetching++;
-    const workerURL = new URL('workers/scams/mev.ts', import.meta.url).href;
-    const worker = new Worker(workerURL);
-    worker.postMessage(domain);
-    worker.onmessage = (event) => {
-      certsFetched++;
-      switch (event.data) {
-        case 'mev':
-          console.log(
-            JSON.stringify({
-              message: 'scam-detected',
-              scam: 'mev',
-              level: 'info',
-              domain,
-              _time: Date.now(),
-            }),
-          );
-          return;
-      }
+    // certsFetching++;
+    // const workerURL = new URL('workers/scams/mev.ts', import.meta.url).href;
+    // const worker = new Worker(workerURL);
+    // worker.postMessage(domain);
+    // worker.onmessage = (event) => {
+    //   certsFetched++;
+    //   switch (event.data) {
+    //     case 'mev':
+    //       console.log(
+    //         JSON.stringify({
+    //           message: 'scam-detected',
+    //           scam: 'mev',
+    //           level: 'info',
+    //           domain,
+    //           _time: Date.now(),
+    //         }),
+    //       );
+    //       return;
+    //   }
 
-      console.info(
-        JSON.stringify({
-          message: 'nothing-detected',
-          level: 'debug',
-          domain,
-          _time: Date.now(),
-        }),
-      );
+    //   console.info(
+    //     JSON.stringify({
+    //       message: 'nothing-detected',
+    //       level: 'debug',
+    //       domain,
+    //       _time: Date.now(),
+    //     }),
+    //   );
 
-      // Terminate the worker when we're done
-      worker.terminate();
-    };
+    //   // Terminate the worker when we're done
+    //   worker.terminate();
+    // };
   } catch (error) {
     console.error(`> [client] ${error}`);
   }
