@@ -23,29 +23,38 @@ const client = new CertStreamClient(async (meta) => {
       }),
     );
 
-    // // Log every 100th cert
-    // if (certsSeen % 100 === 0) {
-    //   console.info(`> [client] ${certsSeen} certs seen, ${certsFetched}/${certsFetching} fetched`);
-    // }
+    certsFetching++;
+    const workerURL = new URL('workers/scams/mev.ts', import.meta.url).href;
+    const worker = new Worker(workerURL);
+    worker.postMessage(domain);
+    worker.onmessage = (event) => {
+      certsFetched++;
+      switch (event.data) {
+        case 'mev':
+          console.log(
+            JSON.stringify({
+              message: 'scam-detected',
+              scam: 'mev',
+              level: 'info',
+              domain,
+              _time: Date.now(),
+            }),
+          );
+          return;
+      }
 
-    // // Fetch the main page of the site
-    // certsFetching++;
-    // const response = await fetch(`http://${domain}`, {
-    //   timeout: true,
-    // }).catch(() => undefined);
-    // certsFetched++;
-    // if (!response) return;
+      console.info(
+        JSON.stringify({
+          message: 'nothing-detected',
+          level: 'debug',
+          domain,
+          _time: Date.now(),
+        }),
+      );
 
-    // // Get the request body
-    // const text = await response.text();
-
-    // // Check for MEV scam
-    // if (text.includes('MEV')) console.info(`> [client] ${domain} Found possible MEV scam`);
-
-    // // Check for crypto
-    // if (text.includes('crypto')) console.info(`> [client] ${domain} Found crypto site`);
-
-    // console.info(`> [client] ${domain} ${response.status}`);
+      // Terminate the worker when we're done
+      worker.terminate();
+    };
   } catch (error) {
     console.error(`> [client] ${error}`);
   }
