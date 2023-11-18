@@ -23,8 +23,8 @@ const client = new CertStreamClient(async (meta) => {
       }),
     );
 
-    // Only check 1/100 certs
-    if (certsSeen % 100 !== 0) return;
+    // Only check 1/10 certs
+    if (certsSeen % 10 !== 0) return;
 
     // Log the stats
     console.info(
